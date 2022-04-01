@@ -28,7 +28,8 @@ userManagement.registerUser = async (req, res) => {
                 throw "{User : 'This user already exist'}"
             } else {
                 // Crear una instància de l'Schema amb les dades rebudes
-                const password = await bcrypt.hash(dataUser.password, 10);
+                const salt = await bcrypt.genSalt(10);
+                const password = await bcrypt.hash(dataUser.password, salt);
                 dataUser.password=password;
                 const newUser = new User(dataUser);
                 // Desar les dades amb el mètode .save(). Aquesta operació és asíncrona
@@ -52,8 +53,9 @@ userManagement.loginUser = async (req, res) => {
         const dataUser = req.body;
         const userLogin = await User.findOne({email: dataUser.email});
         if (userLogin !== null) {
-            const match = comparePassword(dataUser.password,userLogin.password);
-            if (match) {
+            console.log(userLogin.password)
+            if (await comparePassword(dataUser.password,userLogin.password)) {
+                userLogin.password="";
                 return userLogin;
             } else {
                 throw "{User : 'This password is not correct'}"
