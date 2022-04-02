@@ -52,17 +52,12 @@ userManagement.loginUser = async (req, res) => {
     try {
         const dataUser = req.body;
         const userLogin = await User.findOne({email: dataUser.email});
-        if (userLogin !== null) {
-            console.log(userLogin.password)
-            if (await comparePassword(dataUser.password,userLogin.password)) {
-                userLogin.password="";
-                return userLogin;
-            } else {
-                throw "{User : 'This password is not correct'}"
-            }
-        } else {
-            throw "{User : 'This user not exist'}"
-        }
+        if (!userLogin) throw "{User : 'This user not exist'}"
+        const validPassword=await bcrypt.compare(dataUser.password,userLogin.password)
+        if (!validPassword) throw "{User : 'This password is not correct'}"
+        userLogin.password="";
+        return userLogin;
+
     } catch (err) {
         res.status(400).json({
             error: err
