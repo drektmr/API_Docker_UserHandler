@@ -56,7 +56,7 @@ userManagement.loginUser = async (req, res) => {
         const validPassword=await bcrypt.compare(dataUser.password,userLogin.password)
         if (!validPassword) throw "{User : 'This password is not correct'}"
         userLogin.password="";
-        return userLogin;
+        res.json(userLogin);
 
     } catch (err) {
         res.status(400).json({
