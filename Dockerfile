@@ -2,6 +2,7 @@
   FROM node:16
   # Crea un directori en el container en la ruta indicada
   RUN mkdir -p /usr/src/webserver
+  RUN mkdir -p /data/mySQLdb
   # Es situa en el directori
   WORKDIR /usr/src/webserver
   # Copia package.json en el directori creat

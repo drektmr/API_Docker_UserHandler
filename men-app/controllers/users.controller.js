@@ -66,13 +66,4 @@ userManagement.loginUser = async (req, res) => {
 };
 
 module.exports = userManagement;
-/**
- * onclick= (e)=>{
- *     e.preventDefault(tc)
- *     validation
- *     enviar si es correcto
- *     si los errores son false enviamos el formulario
- *     tener encuenta el type:submit para el bucle
- *     {error.email && <p>error.email</p>}
- * }
- */
+
