@@ -21,8 +21,8 @@ userManagement.registerUser = async (req, res) => {
         // Desar en una constant les dades que venen per POST
         const dataUser = req.body;
         const regexPass = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        console.log(dataUser)
         if (regexPass.test(dataUser.password)) {
-
             const userAux = await User.findOne({email: dataUser.email});
             if (userAux !== null) {
                 throw "{User : 'This user already exist'}"
@@ -33,7 +33,9 @@ userManagement.registerUser = async (req, res) => {
                 dataUser.password=password;
                 const newUser = new User(dataUser);
                 // Desar les dades amb el mètode .save(). Aquesta operació és asíncrona
+                console.log(newUser);
                 await newUser.save();
+                res.json(newUser);
             }
         } else {
             throw "{password : 'Invalid password format'}"
@@ -41,7 +43,7 @@ userManagement.registerUser = async (req, res) => {
 
         // Enviar un missatge de confirmació
         //res.send("El registro se completo correctamente.");
-        res.json("El registro se completo correctamente.");
+
     } catch (err) {
         res.status(400).json({
             error: err
@@ -51,12 +53,14 @@ userManagement.registerUser = async (req, res) => {
 userManagement.loginUser = async (req, res) => {
     try {
         const dataUser = req.body;
+        console.log(req.body);
         const userLogin = await User.findOne({email: dataUser.email});
         if (!userLogin) throw "{User : 'This user not exist'}"
         const validPassword=await bcrypt.compare(dataUser.password,userLogin.password)
         if (!validPassword) throw "{User : 'This password is not correct'}"
         userLogin.password="";
-        res.json(userLogin);
+        console.log(userLogin);
+        await res.json(userLogin);
 
     } catch (err) {
         res.status(400).json({
