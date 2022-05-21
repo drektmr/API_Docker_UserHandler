@@ -9,7 +9,7 @@ const mysql = require('mysql');
  * @type {Connection}
  */
 const connection = mysql.createConnection({
-    host: "192.168.25.4",
+    host: "192.168.25.3",
     port: 3306,
     user: 'melomany',
     password: "thos",

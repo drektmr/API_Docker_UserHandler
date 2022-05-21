@@ -12,6 +12,8 @@ services:
       - $MONGODB_LOCAL_PORT:$MONGODB_DOCKER_PORT
     volumes:
       - db:/data/db
+    networks:
+      - default
   app:
     depends_on:
       - mongodb
@@ -83,3 +85,4 @@ networks:
             app: 192.168.25.5
             mysqldb: 192.168.25.4
             phpmyadmin: 192.168.25.3
+            mongodb: 192.168.25.2
