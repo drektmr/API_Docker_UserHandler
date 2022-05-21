@@ -1,22 +1,12 @@
 require('./../db/connection');
 const bcrypt = require('bcrypt');
 const _db = require("../config/db");
-const User = require('../db/model/user.schema');
 const userManagement = {};
+//const User = require('../db/model/user.schema');
 
-const comparePassword = async (password, hash) => {
-    try {
-        // Compare password
-        return await bcrypt.compare(password, hash);
-    } catch (error) {
-        console.log(error);
-    }
-
-    // Return false if error
-    return false;
-};
 
 // Definir mètode registerUser()
+/*
 userManagement.registerUser = async (req, res) => {
     try {
         // Desar les dades amb el mètode .save(). Aquesta operació és asíncrona
@@ -71,23 +61,27 @@ userManagement.loginUser = async (req, res) => {
         });
     }
 };
-
+*/
+/**
+ * Función con la que haciendo una consulta a base de datos obtendremos y devolveremos un usuario mediante MySQL
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
 userManagement.loginMelomany = async (req, res) => {
     try {
         const dataUser = req.body;
-        console.log(dataUser);
+        if(!dataUser.password) throw "{User : 'Password can not be empty'}"
         let text = "SELECT * FROM user WHERE email = ?";
             const stmt = await _db.query(text,[dataUser.email], function (error, results) {
-                console.log(dataUser.password);
                 bcrypt.compare(dataUser.password,results[0].password)
                     .then((pass)=>{
                         if (pass){
                             if (error) throw error;
-                            console.log(results);
                             results[0].password="";
                             res.json(results[0]);
                         }else{
-                            console.log("User : 'Some data is not correct.'");
+                            throw "{User : 'Some data is not correct'}"
                         }
                     });
             });
@@ -98,7 +92,14 @@ userManagement.loginMelomany = async (req, res) => {
         });
     }
 };
-/*
+
+/**
+ * Función de registro mediante MySQL donde filtraremos y limpiaremos los datos que insertamos en la base de datos
+ * además de retornarnos el usuario si todo ha ido bien para ya estar logeados en la web.
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
 userManagement.registerMelomany = async (req, res) => {
     try {
         // Desar les dades amb el mètode .save(). Aquesta operació és asíncrona
@@ -109,66 +110,16 @@ userManagement.registerMelomany = async (req, res) => {
         if (regexPass.test(dataUser.password)) {
             let text="SELECT * FROM user WHERE email = ?";
             const password = await bcrypt.hash(dataUser.password, 10);
-            console.log(dataUser.email)
             const stmt = await _db.query(text,dataUser.email, function (error, results) {
-                console.log(results);
                 if (results.length!==0){
                     throw "{User : 'This user already exist'}"
-                    console.log("exist");
                 } else {
                     dataUser.password = password;
-                    let insert = "INSERT INTO user(rol, email, password, name, lastName, creditCard, direction) VALUE (?,?,?,?,?,?,?)";
-                    const insertQuery = _db.query(insert,[4,dataUser.email,dataUser.password,dataUser.name,dataUser.lastName,null,null],function(error2, results2){
+                    let insert = "INSERT INTO user(rol, email, password, name, lastName, creditCard, direction, dateBirth, description, country) VALUE (?,?,?,?,?,?,?,?,?,?)";
+                    const insertQuery = _db.query(insert,[4,dataUser.email,dataUser.password,dataUser.name,dataUser.lastName,null,null,dataUser.dateBirth,dataUser.description,dataUser.country],function(error2, results2){
                         if (results2) {
-                            results2.password = "";
-                            res.json({
-                                nom: dataUser.nom,
-                                lastName: dataUser.lastName,
-                                email: dataUser.email
-                            });
-                        } else {
-                            throw "{User : 'Some data is not correct.'}"
-                        }
-                    })
-                }
-            })
-        } else {
-            throw "{password : 'Invalid password format'}"
-        }
-    } catch (err) {
-        res.status(400).json({
-            error: err
-        });
-    }
-};
-*/
-userManagement.registerMelomany = async (req, res) => {
-    try {
-        // Desar les dades amb el mètode .save(). Aquesta operació és asíncrona
-        // Desar en una constant les dades que venen per POST
-        const dataUser = req.body;
-
-        const regexPass = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-        if (regexPass.test(dataUser.password)) {
-            let text="SELECT * FROM user WHERE email = ?";
-            const password = await bcrypt.hash(dataUser.password, 10);
-            console.log(dataUser.email)
-            const stmt = await _db.query(text,dataUser.email, function (error, results) {
-                console.log(results);
-                if (results.length!==0){
-                    throw "{User : 'This user already exist'}"
-                    console.log("exist");
-                } else {
-                    dataUser.password = password;
-                    let insert = "INSERT INTO user(rol, email, password, name, lastName, creditCard, direction, dateBirth, description) VALUE (?,?,?,?,?,?,?,?,?)";
-                    const insertQuery = _db.query(insert,[4,dataUser.email,dataUser.password,dataUser.name,dataUser.lastName,null,null,dataUser.dateBirth,dataUser.description],function(error2, results2){
-                        if (results2) {
-                            results2.password = "";
-                            res.json({
-                                nom: dataUser.nom,
-                                lastName: dataUser.lastName,
-                                email: dataUser.email
-                            });
+                            dataUser.password="";
+                            res.json(dataUser);
                         } else {
                             throw "{User : 'Some data is not correct.'}"
                         }
