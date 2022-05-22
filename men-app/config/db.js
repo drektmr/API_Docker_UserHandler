@@ -15,7 +15,9 @@ const connection = mysql.createConnection({
     password: "thos",
     database: "melomany"
 })
-
+/**
+ * Con la siguiente función realizaremos la conexión a la base de datos, en caso de error nos lo devolverá en el log del servidor
+ */
 connection.connect(function(err) {
     if (err) throw err;
     console.log("mysql connected");
