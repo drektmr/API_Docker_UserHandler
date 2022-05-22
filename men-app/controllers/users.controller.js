@@ -1,4 +1,4 @@
-require('./../db/connection');
+//require('./../db/connection');
 const bcrypt = require('bcrypt');
 const _db = require("../config/db");
 const userManagement = {};
@@ -75,17 +75,35 @@ userManagement.loginMelomany = async (req, res) => {
         let text = "SELECT * FROM user WHERE email = ?";
             const stmt = await _db.query(text,[dataUser.email], function (error, results) {
                 bcrypt.compare(dataUser.password,results[0].password)
+
                     .then((pass)=>{
                         if (pass){
                             if (error) throw error;
                             results[0].password="";
                             res.json(results[0]);
                         }else{
-                            throw "{User : 'Some data is not correct'}"
+                            throw 'Some data is not correct';
                         }
                     });
             });
-
+            // const dataUser = req.body;
+            // if (!dataUser.password) throw "{User : 'Password can not be empty'}"
+            // let text = "SELECT * FROM user WHERE email = ?";
+            // const stmt = await _db.query(text, [dataUser.email], function (error, results) {
+            //     if (error) throw error;
+            //     return results;
+            // });
+            // console.log(stmt[1]._results);
+            // let pass = await bcrypt.compare(dataUser.password, stmt[0].password);
+            // console.log(pass);
+            // if (pass) {
+            //     stmt.
+            //     console.log(stmt[0]);
+            //     stmt.password = "";
+            //     res.json(stmt[0]);
+            // } else {
+            //     throw "{User : 'Some data is not correct'}"
+            // }
     } catch (err) {
         res.status(400).json({
             error: err
@@ -112,7 +130,7 @@ userManagement.registerMelomany = async (req, res) => {
             const password = await bcrypt.hash(dataUser.password, 10);
             const stmt = await _db.query(text,dataUser.email, function (error, results) {
                 if (results.length!==0){
-                    throw "{User : 'This user already exist'}"
+                    throw 'El usuario ya existe';
                 } else {
                     dataUser.password = password;
                     let insert = "INSERT INTO user(rol, email, password, name, lastName, creditCard, direction, dateBirth, description, country) VALUE (?,?,?,?,?,?,?,?,?,?)";
@@ -121,13 +139,13 @@ userManagement.registerMelomany = async (req, res) => {
                             dataUser.password="";
                             res.json(dataUser);
                         } else {
-                            throw "{User : 'Some data is not correct.'}"
+                            throw 'Algún dato no es correcto'
                         }
                     })
                 }
             })
         } else {
-            throw "{password : 'Invalid password format'}"
+            throw 'El formato de la contraseña no es correcto';
         }
     } catch (err) {
         res.status(400).json({

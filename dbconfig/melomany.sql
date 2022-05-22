@@ -1,3 +1,4 @@
+/*Script para la generación de la base de datos con todos sus registros para pruebas*/
 -- phpMyAdmin SQL Dump
 -- version 5.1.3
 -- https://www.phpmyadmin.net/
