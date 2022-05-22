@@ -71,18 +71,17 @@ userManagement.loginUser = async (req, res) => {
 userManagement.loginMelomany = async (req, res) => {
     try {
         const dataUser = req.body;
-        if(!dataUser.password) throw "{User : 'Password can not be empty'}"
+        if(!dataUser.password) throw 'La contraseña no puede estar vacia';
         let text = "SELECT * FROM user WHERE email = ?";
             const stmt = await _db.query(text,[dataUser.email], function (error, results) {
                 bcrypt.compare(dataUser.password,results[0].password)
-
                     .then((pass)=>{
                         if (pass){
                             if (error) throw error;
                             results[0].password="";
                             res.json(results[0]);
                         }else{
-                            throw 'Some data is not correct';
+                            throw 'Algún dato no es correcto';
                         }
                     });
             });
@@ -148,7 +147,7 @@ userManagement.registerMelomany = async (req, res) => {
             throw 'El formato de la contraseña no es correcto';
         }
     } catch (err) {
-        res.status(400).json({
+        res.json({
             error: err
         });
     }
