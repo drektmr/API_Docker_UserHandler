@@ -147,7 +147,7 @@ userManagement.registerMelomany = async (req, res) => {
             throw 'El formato de la contraseña no es correcto';
         }
     } catch (err) {
-        res.json({
+        res.status(400).json({
             error: err
         });
     }
