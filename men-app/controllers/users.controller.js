@@ -73,7 +73,7 @@ userManagement.loginMelomany = async (req, res) => {
         const dataUser = req.body;
         if(!dataUser.password) throw 'La contraseña no puede estar vacia';
         let text = "SELECT * FROM user WHERE email = ?";
-            const stmt = await _db.query(text,[dataUser.email], function (error, results) {
+            const stmt = _db.query(text,[dataUser.email], function (error, results) {
                 bcrypt.compare(dataUser.password,results[0].password)
                     .then((pass)=>{
                         if (pass){
@@ -119,15 +119,13 @@ userManagement.loginMelomany = async (req, res) => {
  */
 userManagement.registerMelomany = async (req, res) => {
     try {
-        // Desar les dades amb el mètode .save(). Aquesta operació és asíncrona
-        // Desar en una constant les dades que venen per POST
         const dataUser = req.body;
 
         const regexPass = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
         if (regexPass.test(dataUser.password)) {
             let text="SELECT * FROM user WHERE email = ?";
             const password = await bcrypt.hash(dataUser.password, 10);
-            const stmt = await _db.query(text,dataUser.email, function (error, results) {
+            const stmt = _db.query(text,dataUser.email, function (error, results) {
                 if (results.length!==0){
                     throw 'El usuario ya existe';
                 } else {

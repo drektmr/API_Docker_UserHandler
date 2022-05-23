@@ -1,4 +1,3 @@
-const bcrypt = require("bcrypt");
 const _db =require("../config/db");
 const playlistManagement = {};
 /**
@@ -11,7 +10,7 @@ playlistManagement.getSongs = async (req, res) => {
     try {
         const playlistId = req.body.playlistID;
         let text = "SELECT s.id, s.title, s.artist, s.featuring, s.duration, g.name, s.src, s.image FROM songs s INNER JOIN playlist_has_songs ps ON ps.songs_id= s.id INNER JOIN playlist p ON p.id = ps.playlist_id INNER JOIN genre g ON g.id=s.genre_ID WHERE p.id=?";
-        const stmt=await _db.query(text,[playlistId], function (error, results) {
+        _db.query(text,[playlistId], function (error, results) {
            if (error) throw error;
            res.json(results);
         });
@@ -31,7 +30,7 @@ playlistManagement.getPlaylists = async (req, res) => {
     try {
         const userId = req.body.id;
         let text = "SELECT id, name FROM playlist WHERE idOwner=?";
-        const stmt=await _db.query(text,[userId],function (error, results) {
+        _db.query(text,[userId],function (error, results) {
             if (error) throw error;
             res.json(results);
         });
