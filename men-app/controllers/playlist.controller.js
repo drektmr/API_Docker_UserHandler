@@ -29,7 +29,7 @@ playlistManagement.getSongs = async (req, res) => {
 playlistManagement.getPlaylists = async (req, res) => {
     try {
         const userId = req.body.id;
-        let text = "SELECT id, name FROM playlist WHERE idOwner=?";
+        let text = "SELECT id, name, image FROM playlist WHERE idOwner=?";
         _db.query(text,[userId],function (error, results) {
             if (error) throw error;
             res.json(results);

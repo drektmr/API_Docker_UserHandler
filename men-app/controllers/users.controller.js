@@ -71,38 +71,27 @@ userManagement.loginUser = async (req, res) => {
 userManagement.loginMelomany = async (req, res) => {
     try {
         const dataUser = req.body;
-        if(!dataUser.password) throw 'La contraseña no puede estar vacia';
-        let text = "SELECT * FROM user WHERE email = ?";
-            const stmt = _db.query(text,[dataUser.email], function (error, results) {
-                bcrypt.compare(dataUser.password,results[0].password)
-                    .then((pass)=>{
-                        if (pass){
+        let passWordisSet = true;
+        if (!dataUser.password) {
+            passWordisSet = false;
+            res.json({error: 'La contraseña no puede estar vacia'});
+        }
+        if (passWordisSet) {
+            let text = "SELECT * FROM user WHERE email = ?";
+            _db.query(text, [dataUser.email], function (error, results) {
+                console.log(results[0]);
+                bcrypt.compare(dataUser.password, results[0].password)
+                    .then((pass) => {
+                        if (pass) {
                             if (error) throw error;
-                            results[0].password="";
+                            results[0].password = "";
                             res.json(results[0]);
-                        }else{
-                            throw 'Algún dato no es correcto';
+                        } else {
+                            res.json({error: 'Algún dato no es correcto'});
                         }
                     });
             });
-            // const dataUser = req.body;
-            // if (!dataUser.password) throw "{User : 'Password can not be empty'}"
-            // let text = "SELECT * FROM user WHERE email = ?";
-            // const stmt = await _db.query(text, [dataUser.email], function (error, results) {
-            //     if (error) throw error;
-            //     return results;
-            // });
-            // console.log(stmt[1]._results);
-            // let pass = await bcrypt.compare(dataUser.password, stmt[0].password);
-            // console.log(pass);
-            // if (pass) {
-            //     stmt.
-            //     console.log(stmt[0]);
-            //     stmt.password = "";
-            //     res.json(stmt[0]);
-            // } else {
-            //     throw "{User : 'Some data is not correct'}"
-            // }
+        }
     } catch (err) {
         res.status(400).json({
             error: err
@@ -123,17 +112,17 @@ userManagement.registerMelomany = async (req, res) => {
 
         const regexPass = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
         if (regexPass.test(dataUser.password)) {
-            let text="SELECT * FROM user WHERE email = ?";
+            let text = "SELECT * FROM user WHERE email = ?";
             const password = await bcrypt.hash(dataUser.password, 10);
-            const stmt = _db.query(text,dataUser.email, function (error, results) {
-                if (results.length!==0){
+            const stmt = _db.query(text, dataUser.email, function (error, results) {
+                if (results.length !== 0) {
                     throw 'El usuario ya existe';
                 } else {
                     dataUser.password = password;
                     let insert = "INSERT INTO user(rol, email, password, name, lastName, creditCard, direction, dateBirth, description, country) VALUE (?,?,?,?,?,?,?,?,?,?)";
-                    const insertQuery = _db.query(insert,[4,dataUser.email,dataUser.password,dataUser.name,dataUser.lastName,null,null,dataUser.dateBirth,dataUser.description,dataUser.country],function(error2, results2){
+                    const insertQuery = _db.query(insert, [4, dataUser.email, dataUser.password, dataUser.name, dataUser.lastName, null, null, dataUser.dateBirth, dataUser.description, dataUser.country], function (error2, results2) {
                         if (results2) {
-                            dataUser.password="";
+                            dataUser.password = "";
                             res.json(dataUser);
                         } else {
                             throw 'Algún dato no es correcto'
