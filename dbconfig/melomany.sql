@@ -1,10 +1,9 @@
-/*Script para la generación de la base de datos con todos sus registros para pruebas*/
 -- phpMyAdmin SQL Dump
 -- version 5.1.3
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 192.168.25.3:3306
--- Tiempo de generación: 21-05-2022 a las 20:53:16
+-- Servidor: 192.168.25.4:3306
+-- Tiempo de generación: 26-05-2022 a las 16:47:54
 -- Versión del servidor: 8.0.29
 -- Versión de PHP: 8.0.15
 
@@ -21,15 +20,16 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `melomany`
 --
-DROP DATABASE IF EXISTS `melomany`;
-CREATE DATABASE IF NOT EXISTS `melomany` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
-USE `melomany` ;
+CREATE DATABASE IF NOT EXISTS `melomany` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+USE `melomany`;
+
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `genre`
 --
 
+DROP TABLE IF EXISTS `genre`;
 CREATE TABLE `genre` (
   `id` int NOT NULL,
   `name` varchar(150) NOT NULL
@@ -53,6 +53,7 @@ INSERT INTO `genre` (`id`, `name`) VALUES
 -- Estructura de tabla para la tabla `incidences`
 --
 
+DROP TABLE IF EXISTS `incidences`;
 CREATE TABLE `incidences` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
@@ -66,6 +67,7 @@ CREATE TABLE `incidences` (
 -- Estructura de tabla para la tabla `playlist`
 --
 
+DROP TABLE IF EXISTS `playlist`;
 CREATE TABLE `playlist` (
   `id` int NOT NULL,
   `idOwner` int NOT NULL,
@@ -78,8 +80,8 @@ CREATE TABLE `playlist` (
 --
 
 INSERT INTO `playlist` (`id`, `idOwner`, `name`, `image`) VALUES
-(1, 11, 'Viva el Verano', ''),
-(2, 11, 'Vicios y Virtudes', '');
+(1, 11, 'Viva el Verano', './images/viva.jpg\r\n'),
+(2, 11, 'Vicios y Virtudes', './images/vicios-y-virtudes.jpg');
 
 -- --------------------------------------------------------
 
@@ -87,6 +89,7 @@ INSERT INTO `playlist` (`id`, `idOwner`, `name`, `image`) VALUES
 -- Estructura de tabla para la tabla `playlist_has_songs`
 --
 
+DROP TABLE IF EXISTS `playlist_has_songs`;
 CREATE TABLE `playlist_has_songs` (
   `playlist_id` int NOT NULL,
   `songs_id` int NOT NULL
@@ -109,6 +112,7 @@ INSERT INTO `playlist_has_songs` (`playlist_id`, `songs_id`) VALUES
 -- Estructura de tabla para la tabla `roles`
 --
 
+DROP TABLE IF EXISTS `roles`;
 CREATE TABLE `roles` (
   `id` int NOT NULL,
   `name` varchar(50) NOT NULL
@@ -130,6 +134,7 @@ INSERT INTO `roles` (`id`, `name`) VALUES
 -- Estructura de tabla para la tabla `songs`
 --
 
+DROP TABLE IF EXISTS `songs`;
 CREATE TABLE `songs` (
   `id` int NOT NULL,
   `ownerID` int NOT NULL,
@@ -158,6 +163,7 @@ INSERT INTO `songs` (`id`, `ownerID`, `title`, `duration`, `artist`, `image`, `g
 -- Estructura de tabla para la tabla `user`
 --
 
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` int NOT NULL,
   `rol` int NOT NULL,
@@ -165,7 +171,7 @@ CREATE TABLE `user` (
   `password` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `name` varchar(50) NOT NULL,
   `lastName` varchar(150) NOT NULL,
-  `creditCard` int DEFAULT NULL,
+  `creditCard` varchar(19) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `direction` varchar(200) DEFAULT NULL,
   `description` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `dateBirth` date DEFAULT NULL,
@@ -185,7 +191,7 @@ INSERT INTO `user` (`id`, `rol`, `email`, `password`, `name`, `lastName`, `credi
 (5, 4, 'dduran3@gmail.com', '$2b$10$eAkQPu0FA8fktyBuxkgtaO28cRWv8yBGkSTXMgdWUinRZzsUiaX7O', 'Denis', 'Duran', NULL, NULL, '', NULL, NULL, NULL),
 (9, 4, 'ddu2@gmail.com', '$2b$10$JFluqHafuRVRA1jBMQ1xLOgUzjLTkuQuGOK9lfG68hqG05YQBnnnq', 'Denis', 'Duran', NULL, NULL, '', NULL, NULL, NULL),
 (10, 4, 'ddu2@gmail.com', '$2b$10$4IdzDWHs4FGyELN4ueR8qu6/wpq3yM7od7NBO4x5aFjfoDJQ4QMvS', 'Denis', 'Duran', NULL, NULL, '', NULL, NULL, NULL),
-(11, 4, 'dr@gmail.com', '$2b$10$QN/d3D0pslcclzm3U5jB9.8TeYJ99ExEfFMI/Y0gt9fEKxWPCfG1q', 'Denis', 'Duran', NULL, NULL, 'Administrador del sitio Web', '1991-07-05', 31, 'España'),
+(11, 4, 'dr@gmail.com', '$2b$10$QN/d3D0pslcclzm3U5jB9.8TeYJ99ExEfFMI/Y0gt9fEKxWPCfG1q', 'Denis', 'Duran', '5555-6666-8888-2222', 'C/Moragas i Barret 41, BJ1', 'Administrador del sitio web.', '1991-07-05', 31, 'España'),
 (12, 4, 'dlr@gmail.com', '$2b$10$BiYeut38g5zvrHmdjPrBUeKeE0iM4MvwIgcJQppV3duv24MYjUkOK', 'Denis', 'Duran', NULL, NULL, NULL, NULL, NULL, NULL),
 (13, 4, 'fefwfew@gmail.com', '$2b$10$lHFO6vMa/pRRLonJSNcFbet.191JfkyJEjMaeLo.YyG.bR5eyMIFi', 'Denis', 'Duran', NULL, NULL, NULL, NULL, NULL, NULL),
 (14, 4, 'dwdqwwdqddq@gmail.com', '$2b$10$Kxoz2L/bcQbLm/sCZWm3k.3ym6XFijigrzXbJnAfJaxtjyWzK87de', 'Denis', 'Duran Ibañez', NULL, NULL, NULL, NULL, NULL, NULL),
@@ -215,6 +221,7 @@ INSERT INTO `user` (`id`, `rol`, `email`, `password`, `name`, `lastName`, `credi
 -- Estructura de tabla para la tabla `user_has_songs`
 --
 
+DROP TABLE IF EXISTS `user_has_songs`;
 CREATE TABLE `user_has_songs` (
   `user_id` int NOT NULL,
   `songs_id` int NOT NULL
@@ -226,6 +233,7 @@ CREATE TABLE `user_has_songs` (
 -- Estructura de tabla para la tabla `user_plays_playlist`
 --
 
+DROP TABLE IF EXISTS `user_plays_playlist`;
 CREATE TABLE `user_plays_playlist` (
   `user_id` int NOT NULL,
   `playlist_id` int NOT NULL

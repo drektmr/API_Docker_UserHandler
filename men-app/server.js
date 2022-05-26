@@ -19,7 +19,7 @@ const cors = require('cors')
 /**
  * Importamos las funciones necesarias para nuestra aplicación desde los diferentes controladores
  */
-const {/*loginUser,registerUser,*/loginMelomany,registerMelomany} = require('./controllers/users.controller');
+const {/*loginUser,registerUser,*/updateMelomany,loginMelomany,registerMelomany} = require('./controllers/users.controller');
 const {getSongs,getPlaylists} = require('./controllers/playlist.controller');
 
 /**
@@ -54,6 +54,11 @@ app.post('/users/loginUser',loginMelomany);
  * Función de express que nos permitirá recoger las solicitudes de la aplicación mediante POST para el registro de usuarios
  */
 app.post('/users/registerUser',registerMelomany);
+
+/**
+ * Función de express que nos permitirá recoger las solicitudes de la aplicación mediante POST para el actualizar los datos de los usuarios
+ */
+app.post('/users/updateUser',updateMelomany);
 
 /**
  * Función de express para indicar por que puerto recogerá las solicitudes

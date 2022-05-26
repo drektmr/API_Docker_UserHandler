@@ -79,7 +79,6 @@ userManagement.loginMelomany = async (req, res) => {
         if (passWordisSet) {
             let text = "SELECT * FROM user WHERE email = ?";
             _db.query(text, [dataUser.email], function (error, results) {
-                console.log(results[0]);
                 bcrypt.compare(dataUser.password, results[0].password)
                     .then((pass) => {
                         if (pass) {
@@ -133,6 +132,29 @@ userManagement.registerMelomany = async (req, res) => {
         } else {
             throw 'El formato de la contraseña no es correcto';
         }
+    } catch (err) {
+        res.status(400).json({
+            error: err
+        });
+    }
+};
+/**
+ * Función para modificar los datos de un usuario.
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
+userManagement.updateMelomany = async (req, res) => {
+    try {
+        const dataUser = req.body;
+        let update = "UPDATE user SET creditCard=?,direction=?,description=?,dateBirth=?,country=? WHERE email=?";
+        const insertQuery = _db.query(update, [dataUser.creditCard,dataUser.direction,dataUser.description,dataUser.dateBirth,dataUser.country,dataUser.email], function (error, results) {
+            if (error) {
+                res.json({error: 'Algún dato no es correcto'});
+            }else{
+                res.json(results);
+            }
+        })
     } catch (err) {
         res.status(400).json({
             error: err
