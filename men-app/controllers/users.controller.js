@@ -79,16 +79,20 @@ userManagement.loginMelomany = async (req, res) => {
         if (passWordisSet) {
             let text = "SELECT * FROM user WHERE email = ?";
             _db.query(text, [dataUser.email], function (error, results) {
-                bcrypt.compare(dataUser.password, results[0].password)
-                    .then((pass) => {
-                        if (pass) {
-                            if (error) throw error;
-                            results[0].password = "";
-                            res.json(results[0]);
-                        } else {
-                            res.json({error: 'Algún dato no es correcto'});
-                        }
-                    });
+                if(results.length>0){
+                    bcrypt.compare(dataUser.password, results[0].password)
+                        .then((pass) => {
+                            if (pass) {
+                                if (error) throw error;
+                                results[0].password = "";
+                                res.json(results[0]);
+                            } else {
+                                res.json({error: 'Algún dato no es correcto'});
+                            }
+                        });
+                }else{
+                    res.json({error: 'Algún dato no es correcto'});
+                }
             });
         }
     } catch (err) {
